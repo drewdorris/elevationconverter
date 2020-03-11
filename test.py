@@ -16,12 +16,23 @@ def irlToMC(num):
         return (20 * math.log(num)) + math.sqrt(.6 * num);
 
 def handleImage(file):
+    fileType = 'unknown';
+    if 'one_meter' in file:
+        fileType = '1m';
+    elif 'nem19' in file:
+        fileType = '19arc';
+    print(fileType);
+    
     result = subprocess.run(['gdalinfo', '-json', file], stdout=subprocess.PIPE);
     decoded = result.stdout.decode('utf-8');
+    everything = re.search('.*\"coordinates\".*\[.*\n.*\n.*\n.*\n', decoded).group().replace('\n', ' ').replace(' ', '');
+    print(everything);
     max = re.search('.*maximum.*\n', decoded).group().replace('\"maximum\":', '').replace('\n', '').replace(',', '').replace(' ', '');
     min = re.search('.*minimum.*\n', decoded).group().replace('\"minimum\":', '').replace('\n', '').replace(',', '').replace(' ', '');
     maxRealigned = irlToMC(float(max));
     minRealigned = irlToMC(float(min));
+
+    
 
     imageName = 'testing.png';
     subprocess.call(['gdal_translate', '-of', 'PNG', '-scale', min, max, str(minRealigned), str(maxRealigned), '-co', 'worldfile=yes', file, imageName]);
