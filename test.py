@@ -5,6 +5,7 @@ import re
 import glob
 import json
 import yaml
+import time
 from PIL import Image
 
 Image.MAX_IMAGE_PIXELS = 1000000000;
@@ -94,5 +95,8 @@ def handleImage(file):
     os.remove(imageName + '.aux.xml');
     os.remove(imageNameNoFile + '.wld');
 
-for file in glob.glob('./*.img'):
-    handleImage(file);
+while True:
+    for file in glob.glob('./*.img'):
+        handleImage(file);
+        os.remove(file);
+    time.sleep(30);
