@@ -27,7 +27,7 @@ def handleImage(file):
     elif 'imgn' in file:
         fileType = '30m'
     print('Processing \"' + file + '\", ' + fileType);
-    
+
     result = subprocess.run(['gdalinfo', '-json', file], stdout=subprocess.PIPE);
     decoded = result.stdout.decode('utf-8');
     jsonStuff = json.loads(decoded);
@@ -36,7 +36,7 @@ def handleImage(file):
     top = 0;
     right = 0;
     bottom = 0;
-    
+
     for i in jsonStuff['wgs84Extent']['coordinates']:
         index = 0;
         for j in i:
