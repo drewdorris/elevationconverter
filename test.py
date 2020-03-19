@@ -26,7 +26,7 @@ def handleImage(file):
         fileType = '1_9arc';
     elif 'imgn' in file:
         fileType = '30m'
-    print(fileType);
+    print('Processing \"' + file + '\", ' + fileType);
     
     result = subprocess.run(['gdalinfo', '-json', file], stdout=subprocess.PIPE);
     decoded = result.stdout.decode('utf-8');
@@ -58,7 +58,7 @@ def handleImage(file):
     for i in jsonStuff['size']:
         width = i;
         break;
-    inte = 0;
+
     max = jsonStuff['bands'][0]['maximum'];
     min = jsonStuff['bands'][0]['minimum'];
     maxRealigned = irlToMC(max);
@@ -96,6 +96,7 @@ def handleImage(file):
     os.remove(imageNameNoFile + '.wld');
 
 while True:
+    print('Checking for new files');
     for file in glob.glob('./*.img'):
         handleImage(file);
         os.remove(file);
