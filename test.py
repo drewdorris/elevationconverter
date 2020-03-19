@@ -4,6 +4,7 @@ import os
 import re
 import glob
 import json
+import yaml
 from PIL import Image
 
 Image.MAX_IMAGE_PIXELS = 1000000000;
@@ -21,7 +22,9 @@ def handleImage(file):
     if 'one_meter' in file:
         fileType = '1m';
     elif 'nem19' in file:
-        fileType = '19arc';
+        fileType = '1_9arc';
+    elif 'imgn' in file:
+        fileType = '30m'
     print(fileType);
     
     result = subprocess.run(['gdalinfo', '-json', file], stdout=subprocess.PIPE);
@@ -54,18 +57,42 @@ def handleImage(file):
     for i in jsonStuff['size']:
         width = i;
         break;
+    inte = 0;
+    max = jsonStuff['bands'][0]['maximum'];
+    min = jsonStuff['bands'][0]['minimum'];
+    maxRealigned = irlToMC(max);
+    minRealigned = irlToMC(min);
 
-    max = re.search('.*maximum.*\n', decoded).group().replace('\"maximum\":', '').replace('\n', '').replace(',', '').replace(' ', '');
-    min = re.search('.*minimum.*\n', decoded).group().replace('\"minimum\":', '').replace('\n', '').replace(',', '').replace(' ', '');
-    maxRealigned = irlToMC(float(max));
-    minRealigned = irlToMC(float(min));
-
-    imageName = fileType + ';' + str(int(left * 1000)).replace('.', '') + ';' + str(int(top * 1000)).replace('.', '') + ';' + str(width) + '.png';
-    subprocess.call(['gdal_translate', '-of', 'PNG', '-scale', min, max, str(minRealigned), str(maxRealigned), '-co', 'worldfile=yes', file, imageName]);
+    imageNameNoFile = fileType + ';' + str(int(left * 10000)).replace('.', '') + ';' + str(int(top * 10000)).replace('.', '');
+    imageName = imageNameNoFile + '.png';
+    subprocess.call(['gdal_translate', '-of', 'PNG', '-scale', str(min), str(max), str(minRealigned), str(maxRealigned), '-co', 'worldfile=yes', file, imageName]);
     img = Image.open(imageName);
 
     img.save('images/' + imageName);
     print('Image saved: ' + imageName);
+
+    yaml_data = {
+        imageNameNoFile: {
+            'left': left,
+            'top': top,
+            'right': right,
+            'bottom': bottom,
+            'width': width,
+            'type': fileType,
+        }
+    }
+
+    with open('example.yml','r') as yamlfile:
+        cur_yaml = yaml.safe_load(yamlfile);
+        cur_yaml['images'].update(yaml_data);
+
+    if cur_yaml:
+        with open('example.yml','w') as yamlfile:
+            yaml.safe_dump(cur_yaml, yamlfile);
+
+    os.remove(imageName);
+    os.remove(imageName + '.aux.xml');
+    os.remove(imageNameNoFile + '.wld');
 
 for file in glob.glob('./*.img'):
     handleImage(file);
