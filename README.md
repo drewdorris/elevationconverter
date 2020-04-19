@@ -4,7 +4,9 @@ This is a Python script which was going to be used for collecting USGS elevation
 
 ### How to use:
 
-1. Download and decompile IMG files from these sources:
+1. Install GDAL
+
+2. Download and decompile IMG files from these sources:
 
 Compact direct links:
 * 1m: https://prd-tnm.s3.amazonaws.com/index.html?prefix=StagedProducts/Elevation/1m/IMG/
@@ -20,8 +22,8 @@ Map directory for finding specific locations:
 
 Also there's Alaska data that's 5 meters but I haven't tested that
 
-2. Make a new folder, drag everything (including yml) in it, run the script
+3. Make a new folder, drag everything (including yml) in it, run the script
 
-3. Drag and drop IMG files into the folder
+4. Drag and drop IMG files into the folder
 
-4. Do this until you have every single location known on the planet ever compiled
+5. Do this until you have every single location known on the planet ever compiled
