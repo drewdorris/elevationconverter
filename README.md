@@ -1,5 +1,7 @@
 # elevationconverter
 
+This is a Python script which was going to be used for collecting USGS elevation IMG sources, converting to a Minecraft 0-256 scale, and storing in a yaml. I stopped working on this after finding out about terra121, though this could still be used for compiling more accurate 1:1 or 1:10 data which the terra121 data sources lack.
+
 ### How to use:
 
 1. Download and decompile IMG files from these sources:
@@ -18,7 +20,7 @@ Map directory for finding specific locations:
 
 Also there's Alaska data that's 5 meters but I haven't tested that
 
-2. Make a new folder, drag the script in it, run the script
+2. Make a new folder, drag everything (including yml) in it, run the script
 
 3. Drag and drop IMG files into the folder
 
